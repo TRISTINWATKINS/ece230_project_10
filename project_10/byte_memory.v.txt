@@ -1,0 +1,31 @@
+// byte_memory.v
+module byte_memory(
+    input [7:0] data,
+    input store,
+    output reg [7:0] memory
+);
+
+    integer i;
+    reg [7:0] d_latch_data;
+    reg [7:0] d_latch_q;
+
+    always @(*) begin
+      d_latch_data = data;
+    end
+
+    generate
+        for (i = 0; i < 8; i = i + 1) begin : d_latch_instances
+            d_latch dl(
+                .D(d_latch_data[i]),
+                .E(store),
+                .Q(d_latch_q[i]),
+                .NotQ()
+            );
+        end
+    endgenerate
+
+    always @(*) begin
+      memory = d_latch_q;
+    end
+
+endmodule
